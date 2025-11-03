@@ -8,81 +8,158 @@
 
 / {
     behaviors {
-      #include "macros.dtsi"
-      #include "version.dtsi"
+        #include "macros.dtsi"
+        #include "version.dtsi"
 
-      hm: homerow_mods {
-          compatible = "zmk,behavior-hold-tap";
-          label = "HOMEROW_MODS";
-          #binding-cells = <2>;
-          tapping-term-ms = <200>;
-          quick_tap_ms = <175>;
-          flavor = "tap-preferred";
-          bindings = <&kp>, <&kp>;
-      };
-    };
-
-  keymap {
-    compatible = "zmk,keymap";
-
-    default_layer {
-      display-name = "Base";
-      bindings = <
-        &kp EQUAL &kp N1    &kp N2   &kp N3   &kp N4     &kp N5 &tog 1                                                           &mo 3 &kp N6 &kp N7 &kp N8    &kp N9   &kp N0   &kp MINUS
-        &kp TAB   &kp Q     &kp W    &kp E    &kp R      &kp T  &none                                                            &none &kp Y  &kp U  &kp I     &kp O    &kp P    &kp BSLH
-        &kp ESC   &kp A     &kp S    &kp D    &kp F      &kp G  &none           &kp LCTRL &kp LALT &kp LGUI  &kp RCTRL           &none &kp H  &kp J  &kp K     &kp L    &kp SEMI &kp SQT
-        &kp LSHFT &kp Z     &kp X    &kp C    &kp V      &kp B                            &kp HOME &kp PG_UP                           &kp N  &kp M  &kp COMMA &kp DOT  &kp FSLH &kp RSHFT
-        &mo 2     &kp GRAVE &kp CAPS &kp LEFT &kp RIGHT                &kp BSPC &kp DEL   &kp END  &kp PG_DN &kp ENTER &kp SPACE              &kp UP &kp DOWN  &kp LBKT &kp RBKT &mo 2
-      >;
-    };
-    keypad {
-      display-name = "Kp";
-      bindings = <
-        &kp EQUAL &kp N1    &kp N2   &kp N3   &kp N4     &kp N5 &trans                                                           &mo 3 &kp N6 &kp KP_NUM &kp KP_EQUAL &kp KP_DIVIDE &kp KP_MULTIPLY &kp MINUS
-        &kp TAB   &kp Q     &kp W    &kp E    &kp R      &kp T  &none                                                            &none &kp Y  &kp KP_N7  &kp KP_N8    &kp KP_N9     &kp KP_MINUS    &kp BSLH
-        &kp ESC   &kp A     &kp S    &kp D    &kp F      &kp G  &none           &kp LCTRL &kp LALT &kp LGUI  &kp RCTRL           &none &kp H  &kp KP_N4  &kp KP_N5    &kp KP_N6     &kp KP_PLUS     &kp SQT
-        &kp LSHFT &kp Z     &kp X    &kp C    &kp V      &kp B                            &kp HOME &kp PG_UP                           &kp N  &kp KP_N1  &kp KP_N2    &kp KP_N3     &kp KP_ENTER    &kp RSHFT
-        &mo 2     &kp GRAVE &kp CAPS &kp LEFT &kp RIGHT                &kp BSPC &kp DEL   &kp END  &kp PG_DN &kp ENTER &kp KP_N0              &kp UP     &kp DOWN     &kp KP_DOT    &kp RBKT        &mo 2
-      >;
-    };
-    fn {
-      display-name = "Fn";
-      bindings = <
-        &kp F1 &kp F2 &kp F3 &kp F4 &kp F5 &kp F6 &tog 1                                           &mo 3 &kp F7 &kp F8 &kp F9 &kp F10 &kp F11 &kp F12
-        &trans &trans &trans &trans &trans &trans  &none                                           &none &trans &trans &trans &trans  &trans  &trans
-        &trans &trans &trans &trans &trans &trans  &none        &trans &trans &trans &trans        &none &trans &trans &trans &trans  &trans  &trans
-        &trans &trans &trans &trans &trans &trans                      &trans &trans                     &trans &trans &trans &trans  &trans  &trans
-        &trans &trans &trans &trans &trans               &trans &trans &trans &trans &trans &trans              &trans &trans &trans  &trans  &trans
-      >;
-    };
-    mod {
-      display-name = "Mod";
-      bindings = <
-        &none &bt BT_SEL 0 &bt BT_SEL 1 &bt BT_SEL 2 &bt BT_SEL 3 &bt BT_SEL 4 &none                                                                     &trans                 &none        &none        &none        &none &none &none
-        &none &none        &none        &none        &none        &none        &bootloader                                                               &bootloader            &none        &none        &none        &none &none &none
-        &studio_unlock &none        &none        &none        &none        &none        &none                   &none &none &bt BT_CLR &none                      &stp STP_BAT &none        &none        &none        &none &none &none
-        &none &none        &none        &none        &macro_ver   &none                                      &none &none                                                        &none        &none        &none        &none &none &none
-        &none &none        &none        &none        &none                                       &none &none &none &none      &bl BL_TOG &rgb_ug RGB_TOG                                     &bl BL_INC   &bl BL_DEC   &none &none &none
-      >;
-    };
-    extra1 { 
-      display-name = "Red";    
-      status = "reserved";
+        // *** CUSTOM MAC-OPTIMIZED HOME ROW MOD BEHAVIOR (C-A-G-S) ***
+        // NOTE: This overrides the default 'hm' behavior in the previous config.
+        hrm: home_row_mod_mac {
+            compatible = "zmk,behavior-hold-tap";
+            label = "HOMEROW_MODS_MAC";
+            #binding-cells = <2>;
+            tapping-term-ms = <200>;
+            quick_tap_ms = <175>;
+            flavor = "tap-preferred"; // Tap-preferred works better for fast typists.
+            bindings = <&kp>, <&kp>;
+        };
     };
 
-    extra2 { 
-      display-name = "Purple";    
-      status = "reserved";
-    };
+    // Define custom layer indices
+    #define BASE     0
+    #define SYMBOL   1
+    #define FUNCTION 2
+    #define NUMPAD   3 // This corresponds to your old 'keypad' layer
 
-    extra3 { 
-      display-name = "Cyan";    
-      status = "reserved";
-    };
+    keymap {
+        compatible = "zmk,keymap";
 
-    extra4 { 
-      display-name = "Yellow";    
-      status = "reserved";
+        // --- LAYER 0: BASE (C-A-G-S Home Row Mods) ---
+        base_layer {
+            display-name = "Base";
+            bindings = <
+// --------------------------------------------------------------------------------------------------------------------------------------------------
+// | = | 1 | 2 | 3 | 4 | 5 | TOGGLE |          | MOMENTARY | 6 | 7 | 8 | 9 | 0 | - |
+// --------------------------------------------------------------------------------------------------------------------------------------------------
+&kp EQUAL &kp N1    &kp N2    &kp N3    &kp N4    &kp N5    &tog 1    &mo 3 &kp N6    &kp N7    &kp N8    &kp N9    &kp N0    &kp MINUS
+// --------------------------------------------------------------------------------------------------------------------------------------------------
+// | Tab | Q | W | E | R | T |          | Y | U | I | O | P | [ | ] |
+// --------------------------------------------------------------------------------------------------------------------------------------------------
+&kp TAB     &kp Q     &kp W     &kp E     &kp R     &kp T     &none     &none &kp Y     &kp U     &kp I     &kp O     &kp P     &kp BSLH
+// --------------------------------------------------------------------------------------------------------------------------------------------------
+// | ESC/SYM (Inner B) | A/Shift | S/Cmd | D/Opt | F/Ctrl | G |  | H | J/Shift | K/Cmd | L/Opt | ;/Ctrl | ' | BSLH |
+// --------------------------------------------------------------------------------------------------------------------------------------------------
+&lt SYMBOL ESC  &hrm LSHIFT A &hrm LGUI S &hrm LALT D &hrm LCTRL F &kp G     &none     &none &hrm RSHIFT J &hrm RGUI K &hrm RALT L &hrm RCTRL SEMI &kp SQT   &kp FSLH
+// --------------------------------------------------------------------------------------------------------------------------------------------------
+// | LShift | Z | X | C | V | B |  | N | M | , | . | / | RShift |
+// --------------------------------------------------------------------------------------------------------------------------------------------------
+&kp LSHIFT  &kp Z     &kp X     &kp C     &kp V     &kp B     &none     &none &kp N     &kp M     &kp COMMA &kp DOT   &kp SLASH &kp RSHIFT
+// --------------------------------------------------------------------------------------------------------------------------------------------------
+// THUMB CLUSTERS (Left Inner B = ESC/SYM, Left Outer B = DEL/BSPC, Right Outer B = FN/SPACE, Right Inner B = ENTER)
+// | FN | Toggle NUMPAD | [ | { | Tab | DEL/BSPC | ESC/SYM | | ENTER | FN/SPACE | } | ] | ; | ) | FN |
+// --------------------------------------------------------------------------------------------------------------------------------------------------
+&mo FUNCTION &tog NUMPAD &kp LSQB &kp LBRC &kp LCTRL &mt DEL BSPC &lt SYMBOL ESC &none &kp ENTER &lt FUNCTION SPACE &kp RBRC &kp RSQB &kp SEMI &kp RPAR &mo FUNCTION
+            >;
+        };
+
+        // --- LAYER 1: SYMBOL (Coding) ---
+        SYMBOL_layer {
+            display-name = "Symbol";
+            bindings = <
+// --------------------------------------------------------------------------------------------------------------------------------------------------
+// | ESC/` | ! | @ | # | $ | % | TOGGLE |          | N/A | ^ | & | * | ( | ) | - |
+// --------------------------------------------------------------------------------------------------------------------------------------------------
+&kp GRAVE   &kp EXCL  &kp AT    &kp HASH  &kp DLLR  &kp PRCNT &trans    &trans &kp CARET &kp AMPS  &kp STAR  &kp LPAR  &kp RPAR  &kp MINUS
+// --------------------------------------------------------------------------------------------------------------------------------------------------
+// | Tab | \ | | | ~ | ^ |          | ( | { | [ | < | > | ] | } |
+// --------------------------------------------------------------------------------------------------------------------------------------------------
+&kp TAB     &kp BSLH  &kp PIPE  &kp TILD  &kp CARET &kp GRAVE &none     &none &kp LPAR  &kp LBRC  &kp LSQB  &kp LESS  &kp GT    &kp BSLH
+// --------------------------------------------------------------------------------------------------------------------------------------------------
+// | ESC/SYMBOL | A | S | D | F | G |  | H/L | J/D | K/U | L/R | ;/Ctrl | ' | \ |
+// --------------------------------------------------------------------------------------------------------------------------------------------------
+&trans      &trans    &trans    &trans    &trans    &trans    &none     &none &kp LEFT  &kp DOWN  &kp UP    &kp RIGHT &kp SEMI  &kp FSLH
+// --------------------------------------------------------------------------------------------------------------------------------------------------
+// | LShift | Z | X | C | V | B |  | N | M | , | . | / | RShift |
+// --------------------------------------------------------------------------------------------------------------------------------------------------
+&trans      &trans    &trans    &trans    &trans    &trans    &none     &none &trans    &trans    &trans    &trans    &trans
+// --------------------------------------------------------------------------------------------------------------------------------------------------
+// THUMB CLUSTERS
+// --------------------------------------------------------------------------------------------------------------------------------------------------
+&trans      &trans    &trans    &trans    &trans    &trans    &trans    &none &trans    &trans    &trans    &trans    &trans    &trans
+            >;
+        };
+
+        // --- LAYER 2: FUNCTION (F-Keys, Media, Mouse) ---
+        // Renamed from your old 'fn' layer
+        FUNCTION_layer {
+            display-name = "Function";
+            bindings = <
+// --------------------------------------------------------------------------------------------------------------------------------------------------
+// | F1 | F2 | F3 | F4 | F5 | F6 | TOGGLE |          | N/A | F7 | F8 | F9 | F10 | F11 | F12 |
+// --------------------------------------------------------------------------------------------------------------------------------------------------
+&kp F1      &kp F2    &kp F3    &kp F4    &kp F5    &kp F6    &trans    &trans &kp F7    &kp F8    &kp F9    &kp F10   &kp F11   &kp F12
+// --------------------------------------------------------------------------------------------------------------------------------------------------
+// | Tab | PrtScn | ScrLk | App | F13 | F14 |          | Media | Media | Media | Media | Media | Home | End |
+// --------------------------------------------------------------------------------------------------------------------------------------------------
+&kp TAB     &kp PRINTSCREEN &kp SCROLLLOCK &kp MENU &kp F13 &kp F14 &none &none &kp C_MUTE &kp C_VOL_DN &kp C_VOL_UP &kp C_PREV &kp C_NEXT &kp HOME &kp END
+// --------------------------------------------------------------------------------------------------------------------------------------------------
+// | Mouse Keys | Mouse Keys | Mouse Keys | Mouse Keys | Mouse Keys | Mouse Keys |  | Mouse Keys | Mouse Keys | Mouse Keys | Mouse Keys | Mouse Keys | Pause | Delete |
+// --------------------------------------------------------------------------------------------------------------------------------------------------
+&trans      &kp MB1   &kp MB3   &kp MB2   &trans    &trans    &none     &none &kp MS_LEFT &kp MS_DOWN &kp MS_UP &kp MS_RIGHT &trans &kp DEL
+// --------------------------------------------------------------------------------------------------------------------------------------------------
+// | LShift | Z | X | C | V | B |  | N | M | , | . | / | RShift |
+// --------------------------------------------------------------------------------------------------------------------------------------------------
+&trans      &trans    &trans    &trans    &trans    &trans    &none     &none &trans    &trans    &trans    &trans    &trans
+// --------------------------------------------------------------------------------------------------------------------------------------------------
+// THUMB CLUSTERS
+// --------------------------------------------------------------------------------------------------------------------------------------------------
+&trans      &trans    &trans    &trans    &trans    &trans    &trans    &none &trans    &trans    &trans    &trans    &trans    &trans
+            >;
+        };
+
+        // --- LAYER 3: NUMPAD ---
+        // Renamed from your old 'keypad' layer
+        NUMPAD_layer {
+            display-name = "Numpad";
+            bindings = <
+// --------------------------------------------------------------------------------------------------------------------------------------------------
+// | N/A | N7 | N8 | N9 | N- | N/ | TOGGLE |          | N/A | N7 | N8 | N9 | N/ | N* | N- |
+// --------------------------------------------------------------------------------------------------------------------------------------------------
+&trans      &kp N7    &kp N8    &kp N9    &kp KP_MINUS &kp KP_DIVIDE &trans    &trans &kp N7    &kp N8    &kp N9    &kp KP_DIVIDE &kp KP_MULTIPLY &kp KP_MINUS
+// --------------------------------------------------------------------------------------------------------------------------------------------------
+// | Tab | N4 | N5 | N6 | N* | N/ |          | N4 | N5 | N6 | N+ | N= | N. | N, |
+// --------------------------------------------------------------------------------------------------------------------------------------------------
+&kp TAB     &kp N4    &kp N5    &kp N6    &kp KP_MULTIPLY &kp KP_DIVIDE &none &none &kp N4    &kp N5    &kp N6    &kp KP_PLUS &kp KP_EQUAL &kp KP_DOT
+// --------------------------------------------------------------------------------------------------------------------------------------------------
+// | ESC/SYMBOL (Inner B) | N1 | N2 | N3 | N+ | N- |  | N1 | N2 | N3 | NEnter | N/ | ' | \ |
+// --------------------------------------------------------------------------------------------------------------------------------------------------
+&trans      &kp N1    &kp N2    &kp N3    &kp KP_PLUS &kp KP_MINUS &none &none &kp N1    &kp N2    &kp N3    &kp KP_ENTER &kp KP_DIVIDE &kp SQT   &kp FSLH
+// --------------------------------------------------------------------------------------------------------------------------------------------------
+// | LShift | N0 | N. | N, | NEnter | N/ |  | N0 | N. | N, | NEnter | N/ | RShift |
+// --------------------------------------------------------------------------------------------------------------------------------------------------
+&trans      &kp N0    &kp KP_DOT &kp KP_COMMA &kp KP_ENTER &kp KP_DIVIDE &none &none &kp N0    &kp KP_DOT &kp KP_COMMA &kp KP_ENTER &kp KP_DIVIDE &trans
+// --------------------------------------------------------------------------------------------------------------------------------------------------
+// THUMB CLUSTERS
+// --------------------------------------------------------------------------------------------------------------------------------------------------
+&trans      &trans    &trans    &trans    &trans    &trans    &trans    &none &trans    &trans    &trans    &trans    &trans    &trans
+            >;
+        };
+
+        // Preserve your existing mod layer
+        mod_layer {
+            display-name = "Mod";
+            bindings = <
+        &none &bt BT_SEL 0 &bt BT_SEL 1 &bt BT_SEL 2 &bt BT_SEL 3 &bt BT_SEL 4 &none                                                                     &trans                 &none        &none        &none        &none &none &none
+        &none &none        &none        &none        &none        &none        &bootloader                                                               &bootloader            &none        &none        &none        &none &none &none
+        &studio_unlock &none        &none        &none        &none        &none        &none                   &none &none &bt BT_CLR &none                      &stp STP_BAT &none        &none        &none        &none &none &none
+        &none &none        &none        &none        &macro_ver   &none                                      &none &none                                                        &none        &none        &none        &none &none &none
+        &none &none        &none        &none        &none                                       &none &none &none &none      &bl BL_TOG &rgb_ug RGB_TOG                                     &bl BL_INC   &bl BL_DEC   &none &none &none
+            >;
+        };
+
+        // Reserve the remaining empty layers
+        extra1: extra1 { status = "reserved"; };
+        extra2: extra2 { status = "reserved"; };
+        extra3: extra3 { status = "reserved"; };
+        extra4: extra4 { status = "reserved"; };
     };
-  };
 };
