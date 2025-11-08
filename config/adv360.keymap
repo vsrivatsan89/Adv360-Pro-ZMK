@@ -40,7 +40,7 @@
           flavor = "tap-preferred";
           bindings = <&kp>, <&kp>;
       };
-      hml: home_row_mod_left {
+      hm_l: home_row_mod_left {
             compatible = "zmk,behavior-hold-tap";
             label = "HOMEROW_MODS_LEFT";
             #binding-cells = <2>;
@@ -52,7 +52,7 @@
             hold-trigger-key-positions = <KEYS_RIGHT THUMBS>;
             hold-trigger-on-release;
         };
-        hmr: home_row_mod_right {
+        hm_r: home_row_mod_right {
             compatible = "zmk,behavior-hold-tap";
             #binding-cells = <2>;
             flavor = "balanced";
