@@ -121,13 +121,14 @@
         &none &none        &none        &none        &none                                       &none &none &none &none      &bl BL_TOG &rgb_ug RGB_TOG                                     &bl BL_INC   &bl BL_DEC   &none &none &none
       >;
     };
-    symbols {
-      display-name = "Symbols";
+
+    symbol {
+      display-name = "Symbol";
       bindings = <
         &kp F1 &kp F2 &kp F3 &kp F4 &kp F5 &kp F6 &tog 1                                           &mo 3 &kp F7 &kp F8 &kp F9 &kp F10 &kp F11 &kp F12
         &trans &trans &trans &trans &trans &trans  &none                                           &none &trans &trans &trans &trans  &trans  &trans
-        &LBRC &LBKT &LPAR &LESS_THAN &trans &trans  &none        &trans &trans &trans &trans        &none &RBRC &RBKT &RPAR &GREATER_THAN  &trans  &trans
-        &trans &trans &trans &trans &KP_EQUAL &trans                      &trans &trans                     &trans &trans &trans &trans  &trans  &trans
+        &trans &LBRC &LBKT &LPAR &LESS_THAN &trans  &none        &trans &trans &trans &trans        &none &trans &GREATER_THAN &RPAR &RBKT  &RBRC  &trans
+        &trans &trans &trans &trans &trans &trans                      &trans &trans                     &trans &trans &trans &trans  &trans  &trans
         &trans &trans &trans &trans &trans               &trans &trans &trans &trans &trans &trans              &trans &trans &trans  &trans  &trans
       >;
     };
