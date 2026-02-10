@@ -1,5 +1,8 @@
 # Kinesis Advantage 360 Pro ZMK Config
 
+# Home setup 
+use the small USB cable in the book shelf. Mod+1 to flash the left keyboard and then MOD + 3 for the right keyboard
+
 ## Modifying the keymap
 
 [The ZMK documentation](https://zmk.dev/docs) covers both basic and advanced functionality and has a table of OS compatibility for keycodes. Please note that the RGB Underglow, Backlight and Power Management sections are not relevant to the Advantage 360 Pro's custom ZMK fork. For more information see [this note](#note)
