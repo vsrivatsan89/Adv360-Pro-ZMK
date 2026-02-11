@@ -33,6 +33,21 @@
           quick-release;
           ignore-modifiers;
       };
+
+      // Layer-tap tuned for high-frequency thumb keys (Space, Backspace).
+      // 175ms tapping-term is snappier than the default 200ms so quick
+      // taps register immediately. Balanced flavor means the hold only
+      // triggers if you're still holding when another key is pressed OR
+      // the tapping-term expires — this prevents accidental layer
+      // activation during fast typing bursts.
+      ltq: layer_tap_quick {
+          compatible = "zmk,behavior-hold-tap";
+          label = "LAYER_TAP_QUICK";
+          #binding-cells = <2>;
+          flavor = "balanced";
+          tapping-term-ms = <175>;
+          bindings = <&mo>, <&kp>;
+      };
     };
 
   keymap {
@@ -45,9 +60,9 @@
     // │ Modifiers live on the Callum Mods layer (CMODS) accessed via     │
     // │ left deep thumb key.                                             │
     // │                                                                  │
-    // │ Thumb keys (deep position):                                      │
-    // │   Left deep thumb  = mo CMODS (hold for callum mods layer)       │
-    // │   Right deep thumb = mo SYM   (hold for symbols layer)           │
+    // │ Thumb keys (layer-tap on the large resting keys):                  │
+    // │   Left large thumb  = ltq CMODS BSPC (hold=mods, tap=backspace)   │
+    // │   Right large thumb = ltq SYM SPACE  (hold=symbols, tap=space)    │
     // │                                                                  │
     // │ Physical modifier keys (bridge keys between halves) are kept     │
     // │ for direct access: LCTRL, LALT, LGUI, RCTRL.                     │
@@ -59,11 +74,11 @@
         &kp TAB   &kp Q     &kp W    &kp E    &kp R      &kp T  &none                                                                           &none   &kp Y  &kp U  &kp I     &kp O    &kp P    &kp BSLH
         &kp ESC   &kp A     &kp S    &kp D    &kp F      &kp G  &none           &kp LCTRL &kp LALT  &kp LGUI  &kp RCTRL                          &none   &kp H  &kp J  &kp K     &kp L    &kp SEMI &kp SQT
         &kp LSHFT &kp Z     &kp X    &kp C    &kp V      &kp B                            &kp HOME  &kp PG_UP                                           &kp N  &kp M  &kp COMMA &kp DOT  &kp FSLH &kp RSHFT
-        &mo FN    &kp GRAVE &kp CAPS &kp LEFT &kp RIGHT                &kp BSPC &kp DEL   &mo CMODS &mo SYM   &kp ENTER &kp SPACE                              &kp UP &kp DOWN  &kp LBKT &kp RBKT &mo FN
+        &mo FN    &kp GRAVE &kp CAPS &kp LEFT &kp RIGHT         &ltq CMODS BSPC &kp DEL   &kp END   &kp PG_DN &kp ENTER &ltq SYM SPACE                              &kp UP &kp DOWN  &kp LBKT &kp RBKT &mo FN
       >;
       // Thumb cluster (bottom row, middle 6 keys):
-      //   Left:  BSPC, DEL, mo CMODS (deep thumb - was END)
-      //   Right: mo SYM (deep thumb - was PG_DN), ENTER, SPACE
+      //   Left:  ltq CMODS BSPC (tap=Backspace, hold=Callum mods), DEL, END
+      //   Right: PG_DN, ENTER, ltq SYM SPACE (tap=Space, hold=Symbols)
     };
 
     keypad {
@@ -102,7 +117,7 @@
     // ┌──────────────────────────────────────────────────────────────────┐
     // │ LAYER 4: SYMBOLS — Optimized for Go and Rust                     │
     // │                                                                  │
-    // │ Access: Hold right deep thumb key (mo SYM)                       │
+    // │ Access: Hold right large thumb key (ltq SYM SPACE)                 │
     // │                                                                  │
     // │ Design rationale:                                                │
     // │  - Left home row: bracket pairs ( { [ < > ] } ) — the chars     │
@@ -139,7 +154,7 @@
     // ┌──────────────────────────────────────────────────────────────────┐
     // │ LAYER 5: CALLUM MODS                                             │
     // │                                                                  │
-    // │ Access: Hold left deep thumb key (mo CMODS)                      │
+    // │ Access: Hold left large thumb key (ltq CMODS BSPC)                 │
     // │                                                                  │
     // │ Sticky one-shot modifiers on the home row.                       │
     // │ Tap the mod you want, release the layer key, then tap the        │
