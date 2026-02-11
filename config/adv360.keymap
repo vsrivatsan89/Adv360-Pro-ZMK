@@ -6,160 +6,214 @@
 #include <dt-bindings/zmk/backlight.h>
 #include <dt-bindings/zmk/pointing.h>
 
+// Layer indices
+#define BASE   0
+#define KEYPAD 1
+#define FN     2
+#define MOD    3
+#define SYM    4
+#define CMODS  5
+
 / {
+    // Configure sticky keys for callum-style mods:
+    //  - release-after-ms: auto-release if no key pressed within 1 second
+    //  - quick-release: modifier releases as soon as the modified key is pressed (not on release)
+    //  - ignore-modifiers is ON by default in ZMK, which allows chaining multiple sticky mods
+    //    e.g. sk(Cmd) + sk(Shift) + key = Cmd+Shift+key
     behaviors {
-        #include "macros.dtsi"
-        #include "version.dtsi"
+      #include "macros.dtsi"
+      #include "version.dtsi"
 
-        // *** CUSTOM MAC-OPTIMIZED HOME ROW MOD BEHAVIOR (C-A-G-S) ***
-        // NOTE: This overrides the default 'hm' behavior in the previous config.
-        hrm: home_row_mod_mac {
-            compatible = "zmk,behavior-hold-tap";
-            label = "HOMEROW_MODS_MAC";
-            #binding-cells = <2>;
-            tapping-term-ms = <200>;
-            quick_tap_ms = <175>;
-            flavor = "tap-preferred"; // Tap-preferred works better for fast typists.
-            bindings = <&kp>, <&kp>;
-        };
+      skq: sticky_key_quick_release {
+          compatible = "zmk,behavior-sticky-key";
+          label = "STICKY_KEY_QUICK_RELEASE";
+          #binding-cells = <1>;
+          bindings = <&kp>;
+          release-after-ms = <1000>;
+          quick-release;
+          ignore-modifiers;
+      };
+
+      // Layer-tap tuned for high-frequency thumb keys (Space, Backspace).
+      // 175ms tapping-term is snappier than the default 200ms so quick
+      // taps register immediately. Balanced flavor means the hold only
+      // triggers if you're still holding when another key is pressed OR
+      // the tapping-term expires — this prevents accidental layer
+      // activation during fast typing bursts.
+      ltq: layer_tap_quick {
+          compatible = "zmk,behavior-hold-tap";
+          label = "LAYER_TAP_QUICK";
+          #binding-cells = <2>;
+          flavor = "balanced";
+          tapping-term-ms = <175>;
+          bindings = <&mo>, <&kp>;
+      };
     };
 
-    // Define custom layer indices
-    #define BASE     0
-    #define SYMBOL   1
-    #define FUNCTION 2
-    #define NUMPAD   3 // This corresponds to your old 'keypad' layer
+  keymap {
+    compatible = "zmk,keymap";
 
-    keymap {
-        compatible = "zmk,keymap";
-
-        // --- LAYER 0: BASE (C-A-G-S Home Row Mods) ---
-        base_layer {
-            display-name = "Base";
-            bindings = <
-// --------------------------------------------------------------------------------------------------------------------------------------------------
-// | = | 1 | 2 | 3 | 4 | 5 | TOGGLE |          | MOMENTARY | 6 | 7 | 8 | 9 | 0 | - |
-// --------------------------------------------------------------------------------------------------------------------------------------------------
-&kp EQUAL &kp N1    &kp N2    &kp N3    &kp N4    &kp N5    &tog 1    &mo 3 &kp N6    &kp N7    &kp N8    &kp N9    &kp N0    &kp MINUS
-// --------------------------------------------------------------------------------------------------------------------------------------------------
-// | Tab | Q | W | E | R | T |          | Y | U | I | O | P | [ | ] |
-// --------------------------------------------------------------------------------------------------------------------------------------------------
-&kp TAB     &kp Q     &kp W     &kp E     &kp R     &kp T     &none     &none &kp Y     &kp U     &kp I     &kp O     &kp P     &kp BSLH
-// --------------------------------------------------------------------------------------------------------------------------------------------------
-// | ESC/SYM (Inner B) | A/Shift | S/Cmd | D/Opt | F/Ctrl | G |  | H | J/Shift | K/Cmd | L/Opt | ;/Ctrl | ' | BSLH |
-// --------------------------------------------------------------------------------------------------------------------------------------------------
-&lt SYMBOL ESC  &hrm LSHIFT A &hrm LGUI S &hrm LALT D &hrm LCTRL F &kp G     &none     &none &hrm RSHIFT J &hrm RGUI K &hrm RALT L &hrm RCTRL SEMI &kp SQT   &kp FSLH
-// --------------------------------------------------------------------------------------------------------------------------------------------------
-// | LShift | Z | X | C | V | B |  | N | M | , | . | / | RShift |
-// --------------------------------------------------------------------------------------------------------------------------------------------------
-&kp LSHIFT  &kp Z     &kp X     &kp C     &kp V     &kp B     &none     &none &kp N     &kp M     &kp COMMA &kp DOT   &kp SLASH &kp RSHIFT
-// --------------------------------------------------------------------------------------------------------------------------------------------------
-// THUMB CLUSTERS (Left Inner B = ESC/SYM, Left Outer B = DEL/BSPC, Right Outer B = FN/SPACE, Right Inner B = ENTER)
-// | FN | Toggle NUMPAD | [ | { | Tab | DEL/BSPC | ESC/SYM | | ENTER | FN/SPACE | } | ] | ; | ) | FN |
-// --------------------------------------------------------------------------------------------------------------------------------------------------
-&mo FUNCTION &tog NUMPAD &kp LSQB &kp LBRC &kp LCTRL &mt DEL BSPC &lt SYMBOL ESC &none &kp ENTER &lt FUNCTION SPACE &kp RBRC &kp RSQB &kp SEMI &kp RPAR &mo FUNCTION
-            >;
-        };
-
-        // --- LAYER 1: SYMBOL (Coding) ---
-        SYMBOL_layer {
-            display-name = "Symbol";
-            bindings = <
-// --------------------------------------------------------------------------------------------------------------------------------------------------
-// | ESC/` | ! | @ | # | $ | % | TOGGLE |          | N/A | ^ | & | * | ( | ) | - |
-// --------------------------------------------------------------------------------------------------------------------------------------------------
-&kp GRAVE   &kp EXCL  &kp AT    &kp HASH  &kp DLLR  &kp PRCNT &trans    &trans &kp CARET &kp AMPS  &kp STAR  &kp LPAR  &kp RPAR  &kp MINUS
-// --------------------------------------------------------------------------------------------------------------------------------------------------
-// | Tab | \ | | | ~ | ^ |          | ( | { | [ | < | > | ] | } |
-// --------------------------------------------------------------------------------------------------------------------------------------------------
-&kp TAB     &kp BSLH  &kp PIPE  &kp TILD  &kp CARET &kp GRAVE &none     &none &kp LPAR  &kp LBRC  &kp LSQB  &kp LESS  &kp GT    &kp BSLH
-// --------------------------------------------------------------------------------------------------------------------------------------------------
-// | ESC/SYMBOL | A | S | D | F | G |  | H/L | J/D | K/U | L/R | ;/Ctrl | ' | \ |
-// --------------------------------------------------------------------------------------------------------------------------------------------------
-&trans      &trans    &trans    &trans    &trans    &trans    &none     &none &kp LEFT  &kp DOWN  &kp UP    &kp RIGHT &kp SEMI  &kp FSLH
-// --------------------------------------------------------------------------------------------------------------------------------------------------
-// | LShift | Z | X | C | V | B |  | N | M | , | . | / | RShift |
-// --------------------------------------------------------------------------------------------------------------------------------------------------
-&trans      &trans    &trans    &trans    &trans    &trans    &none     &none &trans    &trans    &trans    &trans    &trans
-// --------------------------------------------------------------------------------------------------------------------------------------------------
-// THUMB CLUSTERS
-// --------------------------------------------------------------------------------------------------------------------------------------------------
-&trans      &trans    &trans    &trans    &trans    &trans    &trans    &none &trans    &trans    &trans    &trans    &trans    &trans
-            >;
-        };
-
-        // --- LAYER 2: FUNCTION (F-Keys, Media, Mouse) ---
-        // Renamed from your old 'fn' layer
-        FUNCTION_layer {
-            display-name = "Function";
-            bindings = <
-// --------------------------------------------------------------------------------------------------------------------------------------------------
-// | F1 | F2 | F3 | F4 | F5 | F6 | TOGGLE |          | N/A | F7 | F8 | F9 | F10 | F11 | F12 |
-// --------------------------------------------------------------------------------------------------------------------------------------------------
-&kp F1      &kp F2    &kp F3    &kp F4    &kp F5    &kp F6    &trans    &trans &kp F7    &kp F8    &kp F9    &kp F10   &kp F11   &kp F12
-// --------------------------------------------------------------------------------------------------------------------------------------------------
-// | Tab | PrtScn | ScrLk | App | F13 | F14 |          | Media | Media | Media | Media | Media | Home | End |
-// --------------------------------------------------------------------------------------------------------------------------------------------------
-&kp TAB     &kp PRINTSCREEN &kp SCROLLLOCK &kp MENU &kp F13 &kp F14 &none &none &kp C_MUTE &kp C_VOL_DN &kp C_VOL_UP &kp C_PREV &kp C_NEXT &kp HOME &kp END
-// --------------------------------------------------------------------------------------------------------------------------------------------------
-// | Mouse Keys | Mouse Keys | Mouse Keys | Mouse Keys | Mouse Keys | Mouse Keys |  | Mouse Keys | Mouse Keys | Mouse Keys | Mouse Keys | Mouse Keys | Pause | Delete |
-// --------------------------------------------------------------------------------------------------------------------------------------------------
-&trans      &kp MB1   &kp MB3   &kp MB2   &trans    &trans    &none     &none &kp MS_LEFT &kp MS_DOWN &kp MS_UP &kp MS_RIGHT &trans &kp DEL
-// --------------------------------------------------------------------------------------------------------------------------------------------------
-// | LShift | Z | X | C | V | B |  | N | M | , | . | / | RShift |
-// --------------------------------------------------------------------------------------------------------------------------------------------------
-&trans      &trans    &trans    &trans    &trans    &trans    &none     &none &trans    &trans    &trans    &trans    &trans
-// --------------------------------------------------------------------------------------------------------------------------------------------------
-// THUMB CLUSTERS
-// --------------------------------------------------------------------------------------------------------------------------------------------------
-&trans      &trans    &trans    &trans    &trans    &trans    &trans    &none &trans    &trans    &trans    &trans    &trans    &trans
-            >;
-        };
-
-        // --- LAYER 3: NUMPAD ---
-        // Renamed from your old 'keypad' layer
-        NUMPAD_layer {
-            display-name = "Numpad";
-            bindings = <
-// --------------------------------------------------------------------------------------------------------------------------------------------------
-// | N/A | N7 | N8 | N9 | N- | N/ | TOGGLE |          | N/A | N7 | N8 | N9 | N/ | N* | N- |
-// --------------------------------------------------------------------------------------------------------------------------------------------------
-&trans      &kp N7    &kp N8    &kp N9    &kp KP_MINUS &kp KP_DIVIDE &trans    &trans &kp N7    &kp N8    &kp N9    &kp KP_DIVIDE &kp KP_MULTIPLY &kp KP_MINUS
-// --------------------------------------------------------------------------------------------------------------------------------------------------
-// | Tab | N4 | N5 | N6 | N* | N/ |          | N4 | N5 | N6 | N+ | N= | N. | N, |
-// --------------------------------------------------------------------------------------------------------------------------------------------------
-&kp TAB     &kp N4    &kp N5    &kp N6    &kp KP_MULTIPLY &kp KP_DIVIDE &none &none &kp N4    &kp N5    &kp N6    &kp KP_PLUS &kp KP_EQUAL &kp KP_DOT
-// --------------------------------------------------------------------------------------------------------------------------------------------------
-// | ESC/SYMBOL (Inner B) | N1 | N2 | N3 | N+ | N- |  | N1 | N2 | N3 | NEnter | N/ | ' | \ |
-// --------------------------------------------------------------------------------------------------------------------------------------------------
-&trans      &kp N1    &kp N2    &kp N3    &kp KP_PLUS &kp KP_MINUS &none &none &kp N1    &kp N2    &kp N3    &kp KP_ENTER &kp KP_DIVIDE &kp SQT   &kp FSLH
-// --------------------------------------------------------------------------------------------------------------------------------------------------
-// | LShift | N0 | N. | N, | NEnter | N/ |  | N0 | N. | N, | NEnter | N/ | RShift |
-// --------------------------------------------------------------------------------------------------------------------------------------------------
-&trans      &kp N0    &kp KP_DOT &kp KP_COMMA &kp KP_ENTER &kp KP_DIVIDE &none &none &kp N0    &kp KP_DOT &kp KP_COMMA &kp KP_ENTER &kp KP_DIVIDE &trans
-// --------------------------------------------------------------------------------------------------------------------------------------------------
-// THUMB CLUSTERS
-// --------------------------------------------------------------------------------------------------------------------------------------------------
-&trans      &trans    &trans    &trans    &trans    &trans    &trans    &none &trans    &trans    &trans    &trans    &trans    &trans
-            >;
-        };
-
-        // Preserve your existing mod layer
-        mod_layer {
-            display-name = "Mod";
-            bindings = <
-        &none &bt BT_SEL 0 &bt BT_SEL 1 &bt BT_SEL 2 &bt BT_SEL 3 &bt BT_SEL 4 &none                                                                     &trans                 &none        &none        &none        &none &none &none
-        &none &none        &none        &none        &none        &none        &bootloader                                                               &bootloader            &none        &none        &none        &none &none &none
-        &studio_unlock &none        &none        &none        &none        &none        &none                   &none &none &bt BT_CLR &none                      &stp STP_BAT &none        &none        &none        &none &none &none
-        &none &none        &none        &none        &macro_ver   &none                                      &none &none                                                        &none        &none        &none        &none &none &none
-        &none &none        &none        &none        &none                                       &none &none &none &none      &bl BL_TOG &rgb_ug RGB_TOG                                     &bl BL_INC   &bl BL_DEC   &none &none &none
-            >;
-        };
-
-        // Reserve the remaining empty layers
-        extra1: extra1 { status = "reserved"; };
-        extra2: extra2 { status = "reserved"; };
-        extra3: extra3 { status = "reserved"; };
-        extra4: extra4 { status = "reserved"; };
+    // ┌──────────────────────────────────────────────────────────────────┐
+    // │ LAYER 0: BASE                                                    │
+    // │                                                                  │
+    // │ Clean QWERTY — no dual-function keys on the home row.            │
+    // │ Modifiers live on the Callum Mods layer (CMODS) accessed via     │
+    // │ left deep thumb key.                                             │
+    // │                                                                  │
+    // │ Thumb keys (layer-tap on the large resting keys):                  │
+    // │   Left large thumb  = ltq CMODS BSPC (hold=mods, tap=backspace)   │
+    // │   Right large thumb = ltq SYM SPACE  (hold=symbols, tap=space)    │
+    // │                                                                  │
+    // │ Physical modifier keys (bridge keys between halves) are kept     │
+    // │ for direct access: LCTRL, LALT, LGUI, RCTRL.                     │
+    // └──────────────────────────────────────────────────────────────────┘
+    default_layer {
+      display-name = "Base";
+      bindings = <
+        &kp EQUAL &kp N1    &kp N2   &kp N3   &kp N4     &kp N5 &tog KEYPAD                                                                     &mo MOD &kp N6 &kp N7 &kp N8    &kp N9   &kp N0   &kp MINUS
+        &kp TAB   &kp Q     &kp W    &kp E    &kp R      &kp T  &none                                                                           &none   &kp Y  &kp U  &kp I     &kp O    &kp P    &kp BSLH
+        &kp ESC   &kp A     &kp S    &kp D    &kp F      &kp G  &none           &kp LCTRL &kp LALT  &kp LGUI  &kp RCTRL                          &none   &kp H  &kp J  &kp K     &kp L    &kp SEMI &kp SQT
+        &kp LSHFT &kp Z     &kp X    &kp C    &kp V      &kp B                            &kp HOME  &kp PG_UP                                           &kp N  &kp M  &kp COMMA &kp DOT  &kp FSLH &kp RSHFT
+        &mo FN    &kp GRAVE &kp CAPS &kp LEFT &kp RIGHT         &ltq CMODS BSPC &kp DEL   &kp END   &kp PG_DN &kp ENTER &ltq SYM SPACE                              &kp UP &kp DOWN  &kp LBKT &kp RBKT &mo FN
+      >;
+      // Thumb cluster (bottom row, middle 6 keys):
+      //   Left:  ltq CMODS BSPC (tap=Backspace, hold=Callum mods), DEL, END
+      //   Right: PG_DN, ENTER, ltq SYM SPACE (tap=Space, hold=Symbols)
     };
+
+    keypad {
+      display-name = "Kp";
+      bindings = <
+        &kp EQUAL &kp N1    &kp N2   &kp N3   &kp N4     &kp N5 &trans                                                                          &mo MOD &kp N6 &kp KP_NUM &kp KP_EQUAL &kp KP_DIVIDE &kp KP_MULTIPLY &kp MINUS
+        &kp TAB   &kp Q     &kp W    &kp E    &kp R      &kp T  &none                                                                           &none   &kp Y  &kp KP_N7  &kp KP_N8    &kp KP_N9     &kp KP_MINUS    &kp BSLH
+        &kp ESC   &kp A     &kp S    &kp D    &kp F      &kp G  &none           &kp LCTRL &kp LALT  &kp LGUI  &kp RCTRL                          &none   &kp H  &kp KP_N4  &kp KP_N5    &kp KP_N6     &kp KP_PLUS     &kp SQT
+        &kp LSHFT &kp Z     &kp X    &kp C    &kp V      &kp B                            &kp HOME  &kp PG_UP                                           &kp N  &kp KP_N1  &kp KP_N2    &kp KP_N3     &kp KP_ENTER    &kp RSHFT
+        &mo FN    &kp GRAVE &kp CAPS &kp LEFT &kp RIGHT                &kp BSPC &kp DEL   &kp END   &kp PG_DN &kp ENTER &kp KP_N0                              &kp UP     &kp DOWN     &kp KP_DOT    &kp RBKT        &mo FN
+      >;
+    };
+
+    fn {
+      display-name = "Fn";
+      bindings = <
+        &kp F1 &kp F2 &kp F3 &kp F4 &kp F5 &kp F6 &tog KEYPAD                                                    &mo MOD &kp F7 &kp F8 &kp F9 &kp F10 &kp F11 &kp F12
+        &trans &trans &trans &trans &trans &trans  &none                                                            &none   &trans &trans &trans &trans  &trans  &trans
+        &trans &trans &trans &trans &trans &trans  &none        &trans &trans &trans &trans                          &none   &trans &trans &trans &trans  &trans  &trans
+        &trans &trans &trans &trans &trans &trans                      &trans &trans                                        &trans &trans &trans &trans  &trans  &trans
+        &trans &trans &trans &trans &trans               &trans &trans &trans &trans &trans &trans                                 &trans &trans &trans  &trans  &trans
+      >;
+    };
+
+    mod {
+      display-name = "Mod";
+      bindings = <
+        &none &bt BT_SEL 0 &bt BT_SEL 1 &bt BT_SEL 2 &bt BT_SEL 3 &bt BT_SEL 4 &none                                                                     &trans                 &none        &none        &none        &none &none &none
+        &none &none        &none        &none        &none        &none        &bootloader                                                               &bootloader            &none        &none        &none        &none &none &none
+        &studio_unlock &none        &none        &none        &none        &none        &none                   &none &none &bt BT_CLR &none                      &stp STP_BAT &none        &none        &none        &none &none &none
+        &none &none        &none        &none        &macro_ver   &none                                      &none &none                                                        &none        &none        &none        &none &none &none
+        &none &none        &none        &none        &none                                       &none &none &none &none      &bl BL_TOG &rgb_ug RGB_TOG                                     &bl BL_INC   &bl BL_DEC   &none &none &none
+      >;
+    };
+
+    // ┌──────────────────────────────────────────────────────────────────┐
+    // │ LAYER 4: SYMBOLS — Optimized for Go and Rust                     │
+    // │                                                                  │
+    // │ Access: Hold right large thumb key (ltq SYM SPACE)                 │
+    // │                                                                  │
+    // │ Design rationale:                                                │
+    // │  - Left home row: bracket pairs ( { [ < > ] } ) — the chars     │
+    // │    you type most in Go/Rust struct/func/slice/generics           │
+    // │  - Right home row: operators & special chars used heavily        │
+    // │    in both languages                                             │
+    // │  - Top row: still has F-keys for debugger shortcuts              │
+    // │  - Number row positions: common operator combos                  │
+    // │                                                                  │
+    // │ Left hand (brackets & grouping):                                 │
+    // │   Home: &  {  (  [  <  (& for Go/Rust refs, then brackets)      │
+    // │   Above: `  }  )  ]  > (closing counterparts above)             │
+    // │   Below: |  \  ~  `    (bitwise & escape operators)              │
+    // │                                                                  │
+    // │ Right hand (operators):                                          │
+    // │   Home: _  -  =  +    (assignment family)                        │
+    // │   Above: !  @  #  $   (Rust macros!, attributes, etc)            │
+    // │   Below: ^  %  *  /   (arithmetic)                               │
+    // │                                                                  │
+    // │ For Go: := is easy → type : then SYM+= (or just type :=)        │
+    // │ For Rust: -> is _ position minus key, => is = then >             │
+    // └──────────────────────────────────────────────────────────────────┘
+    symbol {
+      display-name = "Symbol";
+      bindings = <
+        &kp F1    &kp F2    &kp F3   &kp F4    &kp F5         &kp F6 &tog KEYPAD                                                          &mo MOD &kp F7  &kp F8   &kp F9    &kp F10   &kp F11   &kp F12
+        &trans    &kp GRAVE &kp RBRC &kp RPAR  &kp RBKT       &kp GT &none                                                                &none   &trans  &kp EXCL &kp AT    &kp HASH  &kp DLLR  &trans
+        &trans    &kp AMPS  &kp LBRC &kp LPAR  &kp LBKT       &kp LT &none           &trans &trans &trans &trans                           &none   &trans  &kp UNDER &kp MINUS &kp EQUAL &kp PLUS &trans
+        &trans    &kp PIPE  &kp BSLH &kp TILDE &kp GRAVE      &trans                         &trans &trans                                         &trans  &kp CARET &kp PRCNT &kp ASTRK &kp FSLH &trans
+        &trans    &trans    &trans   &trans    &trans                       &trans &trans &trans &trans &trans &trans                                        &trans    &trans    &trans    &trans   &trans
+      >;
+    };
+
+    // ┌──────────────────────────────────────────────────────────────────┐
+    // │ LAYER 5: CALLUM MODS                                             │
+    // │                                                                  │
+    // │ Access: Hold left large thumb key (ltq CMODS BSPC)                 │
+    // │                                                                  │
+    // │ Sticky one-shot modifiers on the home row.                       │
+    // │ Tap the mod you want, release the layer key, then tap the        │
+    // │ target key. The modifier applies to exactly one keypress.        │
+    // │                                                                  │
+    // │ Modifier layout (Mac-optimized — CAGS order):                    │
+    // │   Left hand home row:                                            │
+    // │     A → sticky Ctrl     (most common for terminal/IDE)           │
+    // │     S → sticky Alt/Opt  (special chars, option combos)           │
+    // │     D → sticky Cmd/GUI  (the primary Mac modifier)               │
+    // │     F → sticky Shift    (capitalization, selections)             │
+    // │                                                                  │
+    // │   Right hand home row (mirrored):                                │
+    // │     J → sticky Shift                                             │
+    // │     K → sticky Cmd/GUI                                           │
+    // │     L → sticky Alt/Opt                                           │
+    // │     ; → sticky Ctrl                                              │
+    // │                                                                  │
+    // │ Why CAGS?                                                        │
+    // │   On Mac, Cmd is the most-used modifier (copy/paste/save/etc).   │
+    // │   Putting it on D (middle finger) gives the strongest finger     │
+    // │   the most common job. Shift on F (index) is natural for the     │
+    // │   finger that reaches the most. Ctrl on A (pinky) mirrors its    │
+    // │   physical position on a standard keyboard.                      │
+    // │                                                                  │
+    // │ Usage examples:                                                  │
+    // │   Cmd+S (save):    hold CMODS → tap D → release → tap S          │
+    // │   Cmd+Shift+F:     hold CMODS → tap D → tap F → release → tap F  │
+    // │   Ctrl+C (terminal): hold CMODS → tap A → release → tap C        │
+    // └──────────────────────────────────────────────────────────────────┘
+    callum_mods {
+      display-name = "CMods";
+      bindings = <
+        &trans    &trans       &trans       &trans       &trans        &trans &trans                                                               &trans  &trans &trans        &trans       &trans       &trans        &trans
+        &trans    &trans       &trans       &trans       &trans        &trans &trans                                                               &trans  &trans &trans        &trans       &trans       &trans        &trans
+        &trans    &skq LCTRL   &skq LALT    &skq LGUI    &skq LSHFT   &trans &trans        &trans &trans &trans &trans                            &trans  &trans &skq RSHFT    &skq RGUI    &skq RALT    &skq RCTRL    &trans
+        &trans    &trans       &trans       &trans       &trans        &trans                      &trans &trans                                          &trans &trans        &trans       &trans       &trans        &trans
+        &trans    &trans       &trans       &trans       &trans                     &trans &trans  &trans &trans &trans &trans                                    &trans       &trans       &trans       &trans        &trans
+      >;
+    };
+
+    extra1 {
+      display-name = "Red";
+      status = "reserved";
+    };
+
+    extra2 {
+      display-name = "Purple";
+      status = "reserved";
+    };
+
+    extra3 {
+      display-name = "Cyan";
+      status = "reserved";
+    };
+
+    extra4 {
+      display-name = "Yellow";
+      status = "reserved";
+    };
+  };
 };
