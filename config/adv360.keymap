@@ -40,12 +40,22 @@
       // triggers if you're still holding when another key is pressed OR
       // the tapping-term expires — this prevents accidental layer
       // activation during fast typing bursts.
+      //
+      // require-prior-idle-ms: if any key was pressed within 125ms
+      // before this key, it always resolves as a tap. This prevents
+      // accidental layer activation during fast typing (e.g. "to only"
+      // triggering SYM and producing "to#nly").
+      //
+      // quick-tap-ms: if this same key was tapped within 175ms,
+      // immediately resolve as tap (e.g. double-space always spaces).
       ltq: layer_tap_quick {
           compatible = "zmk,behavior-hold-tap";
           label = "LAYER_TAP_QUICK";
           #binding-cells = <2>;
           flavor = "balanced";
           tapping-term-ms = <175>;
+          quick-tap-ms = <175>;
+          require-prior-idle-ms = <125>;
           bindings = <&mo>, <&kp>;
       };
     };
