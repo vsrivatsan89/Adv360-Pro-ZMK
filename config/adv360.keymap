@@ -85,11 +85,11 @@
         &kp TAB   &kp Q     &kp W    &kp E    &kp R      &kp T  &none                                                                           &none   &kp Y  &kp U  &kp I     &kp O    &kp P    &kp BSLH
         &kp ESC   &kp A     &kp S    &kp D    &kp F      &kp G  &none           &kp LCTRL &kp LALT  &kp LGUI  &kp RCTRL                          &none   &kp H  &kp J  &kp K     &kp L    &kp SEMI &kp SQT
         &kp LSHFT &kp Z     &kp X    &kp C    &kp V      &kp B                            &kp HOME  &kp PG_UP                                           &kp N  &kp M  &kp COMMA &kp DOT  &kp FSLH &kp RSHFT
-        &mo FN    &kp GRAVE &kp CAPS &kp LEFT &kp RIGHT         &ltq CMODS BSPC &kp DEL   &kp END   &kp PG_DN &kp ENTER &ltq SYM SPACE                              &kp UP &kp DOWN  &kp LBKT &kp RBKT &mo FN
+        &mo FN    &kp GRAVE &kp CAPS &kp LEFT &kp RIGHT         &ltq CMODS BSPC &kp DEL   &kp END   &ltq TMUX PG_DN &kp ENTER &ltq SYM SPACE                              &kp UP &kp DOWN  &kp LBKT &kp RBKT &mo FN
       >;
       // Thumb cluster (bottom row, middle 6 keys):
       //   Left:  ltq CMODS BSPC (tap=Backspace, hold=Callum mods), DEL, END
-      //   Right: PG_DN, ENTER, ltq SYM SPACE (tap=Space, hold=Symbols)
+      //   Right: ltq TMUX PG_DN (tap=PgDn, hold=Tmux), ENTER, ltq SYM SPACE (tap=Space, hold=Symbols)
     };
 
     keypad {
@@ -109,7 +109,7 @@
         &kp F1 &kp F2 &kp F3 &kp F4 &kp F5 &kp F6 &tog KEYPAD                                                    &mo MOD &kp F7 &kp F8 &kp F9 &kp F10 &kp F11 &kp F12
         &trans &trans &trans &trans &trans &trans  &none                                                            &none   &trans &trans &trans &trans  &trans  &trans
         &trans &trans &trans &trans &trans &trans  &none        &trans &trans &trans &trans                          &none   &trans &trans &trans &trans  &trans  &trans
-        &trans &trans &tog TMUX &trans &trans &trans                      &trans &trans                                        &trans &trans &trans &trans  &trans  &trans
+        &trans &trans &trans &trans &trans &trans                      &trans &trans                                        &trans &trans &trans &trans  &trans  &trans
         &trans &trans &trans &trans &trans               &trans &trans &trans &trans &trans &trans                                 &trans &trans &trans  &trans  &trans
       >;
     };
@@ -210,7 +210,7 @@
     // ┌──────────────────────────────────────────────────────────────────┐
     // │ LAYER 6: TMUX                                                    │
     // │                                                                  │
-    // │ Access: Toggle via FN layer (bottom-left key) or &tog TMUX       │
+    // │ Access: Hold right inner thumb (ltq TMUX PG_DN) — tap=PgDn       │
     // │                                                                  │
     // │ One-key access to common tmux operations.                        │
     // │ Each key sends the Ctrl+A prefix followed by the action key,     │
@@ -233,7 +233,7 @@
     tmux {
       display-name = "Tmux";
       bindings = <
-        &none         &Tmux_Win1    &Tmux_Win2     &Tmux_Win3     &Tmux_Win4      &Tmux_Win5 &tog TMUX                                                                         &none   &Tmux_Win6     &Tmux_Win7      &Tmux_Win8      &Tmux_Win9      &none           &none
+        &none         &Tmux_Win1    &Tmux_Win2     &Tmux_Win3     &Tmux_Win4      &Tmux_Win5 &none                                                                         &none   &Tmux_Win6     &Tmux_Win7      &Tmux_Win8      &Tmux_Win9      &none           &none
         &none         &none         &Tmux_Split_V  &Tmux_Split_H  &Tmux_Zoom      &none      &none                                                                             &none   &none          &Tmux_Copy_Mode &Tmux_Paste     &Tmux_Reload    &none           &none
         &none         &none         &Tmux_Left     &Tmux_Down     &Tmux_Up        &Tmux_Right &none           &none &none &none &none                                           &none   &Tmux_Left     &Tmux_Down      &Tmux_Up        &Tmux_Right     &none           &none
         &none         &none         &Tmux_Resize_L &Tmux_Resize_D &Tmux_Resize_U  &Tmux_Resize_R                    &none &none                                                        &Tmux_Close_Pane &Tmux_Detach  &Tmux_New_Win   &none           &none           &none
