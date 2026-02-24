@@ -13,6 +13,7 @@
 #define MOD    3
 #define SYM    4
 #define CMODS  5
+#define TMUX   6
 
 / {
     // Configure sticky keys for callum-style mods:
@@ -108,7 +109,7 @@
         &kp F1 &kp F2 &kp F3 &kp F4 &kp F5 &kp F6 &tog KEYPAD                                                    &mo MOD &kp F7 &kp F8 &kp F9 &kp F10 &kp F11 &kp F12
         &trans &trans &trans &trans &trans &trans  &none                                                            &none   &trans &trans &trans &trans  &trans  &trans
         &trans &trans &trans &trans &trans &trans  &none        &trans &trans &trans &trans                          &none   &trans &trans &trans &trans  &trans  &trans
-        &trans &trans &trans &trans &trans &trans                      &trans &trans                                        &trans &trans &trans &trans  &trans  &trans
+        &trans &trans &tog TMUX &trans &trans &trans                      &trans &trans                                        &trans &trans &trans &trans  &trans  &trans
         &trans &trans &trans &trans &trans               &trans &trans &trans &trans &trans &trans                                 &trans &trans &trans  &trans  &trans
       >;
     };
@@ -206,9 +207,38 @@
       >;
     };
 
-    extra1 {
-      display-name = "Red";
-      status = "reserved";
+    // ┌──────────────────────────────────────────────────────────────────┐
+    // │ LAYER 6: TMUX                                                    │
+    // │                                                                  │
+    // │ Access: Toggle via FN layer (bottom-left key) or &tog TMUX       │
+    // │                                                                  │
+    // │ One-key access to common tmux operations.                        │
+    // │ Each key sends the Ctrl+A prefix followed by the action key,     │
+    // │ matching the bindings in tmux.conf.                              │
+    // │                                                                  │
+    // │ Number row: direct window select (1-9) + new window (c)          │
+    // │                                                                  │
+    // │ Left hand:                                                       │
+    // │   Home row: pane navigation      — H  J  K  L  (like vim)       │
+    // │   Above:    splits & zoom         — V  S  Z                     │
+    // │   Below:    resize panes          — sH sJ sK sL (shifted hjkl)  │
+    // │                                                                  │
+    // │ Right hand:                                                      │
+    // │   Home row: pane navigation (dup) — H  J  K  L                  │
+    // │   Above:    copy-mode [  paste ]  reload(R)                      │
+    // │   Below:    close-pane(X)  detach(D)                             │
+    // │                                                                  │
+    // │ Window cycling: prev-win / next-win on arrow positions           │
+    // └──────────────────────────────────────────────────────────────────┘
+    tmux {
+      display-name = "Tmux";
+      bindings = <
+        &none         &Tmux_Win1    &Tmux_Win2     &Tmux_Win3     &Tmux_Win4      &Tmux_Win5 &tog TMUX                                                                         &none   &Tmux_Win6     &Tmux_Win7      &Tmux_Win8      &Tmux_Win9      &none           &none
+        &none         &none         &Tmux_Split_V  &Tmux_Split_H  &Tmux_Zoom      &none      &none                                                                             &none   &none          &Tmux_Copy_Mode &Tmux_Paste     &Tmux_Reload    &none           &none
+        &none         &none         &Tmux_Left     &Tmux_Down     &Tmux_Up        &Tmux_Right &none           &none &none &none &none                                           &none   &Tmux_Left     &Tmux_Down      &Tmux_Up        &Tmux_Right     &none           &none
+        &none         &none         &Tmux_Resize_L &Tmux_Resize_D &Tmux_Resize_U  &Tmux_Resize_R                    &none &none                                                        &Tmux_Close_Pane &Tmux_Detach  &Tmux_New_Win   &none           &none           &none
+        &none         &none         &none          &Tmux_Prev_Win &Tmux_Next_Win              &none &none     &none &none &none &none                                                                   &none           &none           &none           &none           &none
+      >;
     };
 
     extra2 {
