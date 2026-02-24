@@ -222,3 +222,190 @@
     bindings = <&mkp MB1 &mkp MB1>;
     display-name = "Double Click";
   };
+
+  // ──────────────────────────────────────────
+  // Tmux macros  (prefix = Ctrl+A)
+  // Each macro sends the prefix then the action key.
+  // ──────────────────────────────────────────
+
+  // Pane navigation: prefix + h/j/k/l
+  Tmux_Left: Tmux_Left {
+    compatible = "zmk,behavior-macro";
+    #binding-cells = <0>;
+    bindings = <&kp LC(A) &kp H>;
+    display-name = "Tmux Pane Left";
+  };
+  Tmux_Down: Tmux_Down {
+    compatible = "zmk,behavior-macro";
+    #binding-cells = <0>;
+    bindings = <&kp LC(A) &kp J>;
+    display-name = "Tmux Pane Down";
+  };
+  Tmux_Up: Tmux_Up {
+    compatible = "zmk,behavior-macro";
+    #binding-cells = <0>;
+    bindings = <&kp LC(A) &kp K>;
+    display-name = "Tmux Pane Up";
+  };
+  Tmux_Right: Tmux_Right {
+    compatible = "zmk,behavior-macro";
+    #binding-cells = <0>;
+    bindings = <&kp LC(A) &kp L>;
+    display-name = "Tmux Pane Right";
+  };
+
+  // Pane resizing: prefix + H/J/K/L (shifted)
+  Tmux_Resize_L: Tmux_Resize_L {
+    compatible = "zmk,behavior-macro";
+    #binding-cells = <0>;
+    bindings = <&kp LC(A) &kp LS(H)>;
+    display-name = "Tmux Resize Left";
+  };
+  Tmux_Resize_D: Tmux_Resize_D {
+    compatible = "zmk,behavior-macro";
+    #binding-cells = <0>;
+    bindings = <&kp LC(A) &kp LS(J)>;
+    display-name = "Tmux Resize Down";
+  };
+  Tmux_Resize_U: Tmux_Resize_U {
+    compatible = "zmk,behavior-macro";
+    #binding-cells = <0>;
+    bindings = <&kp LC(A) &kp LS(K)>;
+    display-name = "Tmux Resize Up";
+  };
+  Tmux_Resize_R: Tmux_Resize_R {
+    compatible = "zmk,behavior-macro";
+    #binding-cells = <0>;
+    bindings = <&kp LC(A) &kp LS(L)>;
+    display-name = "Tmux Resize Right";
+  };
+
+  // Splits: prefix + v (vertical), prefix + s (horizontal)
+  Tmux_Split_V: Tmux_Split_V {
+    compatible = "zmk,behavior-macro";
+    #binding-cells = <0>;
+    bindings = <&kp LC(A) &kp V>;
+    display-name = "Tmux Split Vertical";
+  };
+  Tmux_Split_H: Tmux_Split_H {
+    compatible = "zmk,behavior-macro";
+    #binding-cells = <0>;
+    bindings = <&kp LC(A) &kp S>;
+    display-name = "Tmux Split Horizontal";
+  };
+
+  // Window navigation: prefix + C-h / C-l
+  Tmux_Prev_Win: Tmux_Prev_Win {
+    compatible = "zmk,behavior-macro";
+    #binding-cells = <0>;
+    bindings = <&kp LC(A) &kp LC(H)>;
+    display-name = "Tmux Prev Window";
+  };
+  Tmux_Next_Win: Tmux_Next_Win {
+    compatible = "zmk,behavior-macro";
+    #binding-cells = <0>;
+    bindings = <&kp LC(A) &kp LC(L)>;
+    display-name = "Tmux Next Window";
+  };
+
+  // Window management
+  Tmux_New_Win: Tmux_New_Win {
+    compatible = "zmk,behavior-macro";
+    #binding-cells = <0>;
+    bindings = <&kp LC(A) &kp C>;
+    display-name = "Tmux New Window";
+  };
+  Tmux_Close_Pane: Tmux_Close_Pane {
+    compatible = "zmk,behavior-macro";
+    #binding-cells = <0>;
+    bindings = <&kp LC(A) &kp X>;
+    display-name = "Tmux Close Pane";
+  };
+  Tmux_Detach: Tmux_Detach {
+    compatible = "zmk,behavior-macro";
+    #binding-cells = <0>;
+    bindings = <&kp LC(A) &kp D>;
+    display-name = "Tmux Detach";
+  };
+
+  // Copy mode & misc
+  Tmux_Copy_Mode: Tmux_Copy_Mode {
+    compatible = "zmk,behavior-macro";
+    #binding-cells = <0>;
+    bindings = <&kp LC(A) &kp LBKT>;
+    display-name = "Tmux Copy Mode";
+  };
+  Tmux_Paste: Tmux_Paste {
+    compatible = "zmk,behavior-macro";
+    #binding-cells = <0>;
+    bindings = <&kp LC(A) &kp RBKT>;
+    display-name = "Tmux Paste Buffer";
+  };
+  Tmux_Reload: Tmux_Reload {
+    compatible = "zmk,behavior-macro";
+    #binding-cells = <0>;
+    bindings = <&kp LC(A) &kp R>;
+    display-name = "Tmux Reload Config";
+  };
+  Tmux_Zoom: Tmux_Zoom {
+    compatible = "zmk,behavior-macro";
+    #binding-cells = <0>;
+    bindings = <&kp LC(A) &kp Z>;
+    display-name = "Tmux Zoom Pane";
+  };
+
+  // Window select by number: prefix + 1-9
+  Tmux_Win1: Tmux_Win1 {
+    compatible = "zmk,behavior-macro";
+    #binding-cells = <0>;
+    bindings = <&kp LC(A) &kp N1>;
+    display-name = "Tmux Window 1";
+  };
+  Tmux_Win2: Tmux_Win2 {
+    compatible = "zmk,behavior-macro";
+    #binding-cells = <0>;
+    bindings = <&kp LC(A) &kp N2>;
+    display-name = "Tmux Window 2";
+  };
+  Tmux_Win3: Tmux_Win3 {
+    compatible = "zmk,behavior-macro";
+    #binding-cells = <0>;
+    bindings = <&kp LC(A) &kp N3>;
+    display-name = "Tmux Window 3";
+  };
+  Tmux_Win4: Tmux_Win4 {
+    compatible = "zmk,behavior-macro";
+    #binding-cells = <0>;
+    bindings = <&kp LC(A) &kp N4>;
+    display-name = "Tmux Window 4";
+  };
+  Tmux_Win5: Tmux_Win5 {
+    compatible = "zmk,behavior-macro";
+    #binding-cells = <0>;
+    bindings = <&kp LC(A) &kp N5>;
+    display-name = "Tmux Window 5";
+  };
+  Tmux_Win6: Tmux_Win6 {
+    compatible = "zmk,behavior-macro";
+    #binding-cells = <0>;
+    bindings = <&kp LC(A) &kp N6>;
+    display-name = "Tmux Window 6";
+  };
+  Tmux_Win7: Tmux_Win7 {
+    compatible = "zmk,behavior-macro";
+    #binding-cells = <0>;
+    bindings = <&kp LC(A) &kp N7>;
+    display-name = "Tmux Window 7";
+  };
+  Tmux_Win8: Tmux_Win8 {
+    compatible = "zmk,behavior-macro";
+    #binding-cells = <0>;
+    bindings = <&kp LC(A) &kp N8>;
+    display-name = "Tmux Window 8";
+  };
+  Tmux_Win9: Tmux_Win9 {
+    compatible = "zmk,behavior-macro";
+    #binding-cells = <0>;
+    bindings = <&kp LC(A) &kp N9>;
+    display-name = "Tmux Window 9";
+  };
