@@ -308,6 +308,52 @@
     display-name = "Tmux Next Window";
   };
 
+  // Cross-container navigation (the "ctrl+letter" family).
+  // Plain letter = move within the pane grid; ctrl+letter = jump out of the
+  // current container. C-h/C-l = tab/window, C-k/C-j = space/session,
+  // C-p/C-n = agent (herdr only; unbound in tmux, so harmless there).
+  Tmux_Prev_Space: Tmux_Prev_Space {
+    compatible = "zmk,behavior-macro";
+    #binding-cells = <0>;
+    bindings = <&kp LC(A) &kp LC(K)>;
+    display-name = "Prev Space/Session";
+  };
+  Tmux_Next_Space: Tmux_Next_Space {
+    compatible = "zmk,behavior-macro";
+    #binding-cells = <0>;
+    bindings = <&kp LC(A) &kp LC(J)>;
+    display-name = "Next Space/Session";
+  };
+  Tmux_Prev_Agent: Tmux_Prev_Agent {
+    compatible = "zmk,behavior-macro";
+    #binding-cells = <0>;
+    bindings = <&kp LC(A) &kp LC(P)>;
+    display-name = "Prev Agent";
+  };
+  Tmux_Next_Agent: Tmux_Next_Agent {
+    compatible = "zmk,behavior-macro";
+    #binding-cells = <0>;
+    bindings = <&kp LC(A) &kp LC(N)>;
+    display-name = "Next Agent";
+  };
+
+  // Last-pane toggle. prefix + ; is tmux's own built-in last-pane binding,
+  // so this needs no tmux.conf change.
+  Tmux_Last_Pane: Tmux_Last_Pane {
+    compatible = "zmk,behavior-macro";
+    #binding-cells = <0>;
+    bindings = <&kp LC(A) &kp SEMI>;
+    display-name = "Last Pane";
+  };
+
+  // Picker: herdr workspace picker / tmux choose-window.
+  Tmux_Space_Picker: Tmux_Space_Picker {
+    compatible = "zmk,behavior-macro";
+    #binding-cells = <0>;
+    bindings = <&kp LC(A) &kp W>;
+    display-name = "Space Picker";
+  };
+
   // Window management
   Tmux_New_Win: Tmux_New_Win {
     compatible = "zmk,behavior-macro";

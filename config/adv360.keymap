@@ -225,36 +225,54 @@
     };
 
     // ┌──────────────────────────────────────────────────────────────────┐
-    // │ LAYER 6: TMUX                                                    │
+    // │ LAYER 6: TMUX — prefix layer, drives tmux AND herdr              │
     // │                                                                  │
-    // │ Access: Hold DEL key (ltq TMUX DEL) — tap=Delete                  │
+    // │ Access: Hold DEL key (ltq TMUX DEL) — tap=Delete                 │
     // │                                                                  │
-    // │ One-key access to common tmux operations.                        │
-    // │ Each key sends the Ctrl+A prefix followed by the action key,     │
-    // │ matching the bindings in tmux.conf.                              │
+    // │ Each key EMITS Ctrl+A (the prefix) + an action key. Ctrl+A is    │
+    // │ the prefix in BOTH ~/.config/tmux/tmux.conf and herdr's          │
+    // │ config.toml, so this layer means the same in either tool.        │
+    // │ (tmux window ~ herdr tab; tmux session ~ herdr workspace.)       │
+    // │ Canonical reference: prefix-layer-guide.md at the repo root.     │
     // │                                                                  │
-    // │ Number row: direct window select (1-9) + new window (c)          │
+    // │ NO SHIFT ON THIS LAYER. LSHFT/RSHFT are &none on purpose:        │
+    // │ holding shift during macro playback would turn &kp LC(A) into    │
+    // │ Ctrl+Shift+A, which is not the prefix, breaking every key here.  │
+    // │ That is why resize has its own row instead of shift+HJKL, and    │
+    // │ why new bindings must never rely on a shift chord.               │
+    // │                                                                  │
+    // │ Emitted-key rule:                                                │
+    // │   plain letter  -> move within the pane grid  (h j k l)          │
+    // │   shift letter  -> resize within the grid     (H J K L)          │
+    // │   ctrl letter   -> jump out of the container:                    │
+    // │        C-h/C-l = tab   C-k/C-j = space   C-p/C-n = agent         │
+    // │                                                                  │
+    // │ Number row: direct window/tab select (1-9)                       │
     // │                                                                  │
     // │ Left hand:                                                       │
-    // │   Home row: pane navigation      — H  J  K  L  (like vim)       │
-    // │   Above:    splits & zoom         — V  S  Z                     │
-    // │   Below:    resize panes          — sH sJ sK sL (shifted hjkl)  │
+    // │   Home row: A=picker, then pane nav — H  J  K  L (vim)           │
+    // │   Above:    splits & zoom          — V  S  Z                     │
+    // │   Below:    resize panes           — sH sJ sK sL                 │
     // │                                                                  │
     // │ Right hand:                                                      │
-    // │   Home row: pane navigation (dup) — H  J  K  L                  │
+    // │   Home row: pane nav (dup) H J K L, then ; = last pane           │
     // │   Above:    copy-mode [  paste ]  reload(R)                      │
-    // │   Below:    close-pane(X)  detach(D)                             │
+    // │             in herdr: [ = scrollback in $EDITOR, ] unbound       │
+    // │   Below:    close-pane(X)  detach(D)  new-window(C)              │
     // │                                                                  │
-    // │ Window cycling: prev-win / next-win on arrow positions           │
+    // │ Bottom nav cluster — all cross-container motion:                 │
+    // │   left/right arrows = prev/next tab   (C-h / C-l)                │
+    // │   up/down arrows    = prev/next space (C-k / C-j)                │
+    // │   [ and ]           = prev/next agent (C-p / C-n, herdr only)    │
     // └──────────────────────────────────────────────────────────────────┘
     tmux {
       display-name = "Tmux";
       bindings = <
         &none         &Tmux_Win1    &Tmux_Win2     &Tmux_Win3     &Tmux_Win4      &Tmux_Win5 &none                                                                         &none   &Tmux_Win6     &Tmux_Win7      &Tmux_Win8      &Tmux_Win9      &none           &none
         &none         &none         &Tmux_Split_V  &Tmux_Split_H  &Tmux_Zoom      &none      &none                                                                             &none   &none          &Tmux_Copy_Mode &Tmux_Paste     &Tmux_Reload    &none           &none
-        &none         &none         &Tmux_Left     &Tmux_Down     &Tmux_Up        &Tmux_Right &none           &none &none &none &none                                           &none   &Tmux_Left     &Tmux_Down      &Tmux_Up        &Tmux_Right     &none           &none
+        &none              &Tmux_Space_Picker &Tmux_Left         &Tmux_Down         &Tmux_Up           &Tmux_Right        &none              &none              &none              &none              &none              &none              &Tmux_Left         &Tmux_Down         &Tmux_Up           &Tmux_Right        &Tmux_Last_Pane    &none
         &none         &none         &Tmux_Resize_L &Tmux_Resize_D &Tmux_Resize_U  &Tmux_Resize_R                    &none &none                                                        &Tmux_Close_Pane &Tmux_Detach  &Tmux_New_Win   &none           &none           &none
-        &none         &none         &none          &Tmux_Prev_Win &Tmux_Next_Win              &none &none     &none &none &none &none                                                                   &none           &none           &none           &none           &none
+        &none            &none            &none            &Tmux_Prev_Win   &Tmux_Next_Win   &none            &none            &none            &none            &none            &none            &Tmux_Prev_Space &Tmux_Next_Space &Tmux_Prev_Agent &Tmux_Next_Agent &none
       >;
     };
 
